@@ -26,7 +26,7 @@ From your terminal, inside the **vagrant** subdirectory, run the command `vagran
 
 **Download the data**
 
-Next, download the data [here](https://github.com/jaytoy/udacity-fullstack-nanodegree/tree/master/Downloads). You will need to unzip this file after downloading it. The file inside is called **newsdata.sql**. Put this file into the **vagrant** directory, which is shared with your virtual machine.
+Next, download the data [here](https://github.com/jaytoy/udacity-fullstack-nanodegree/tree/master/project-logs-analysis/Downloads). You will need to unzip this file after downloading it. The file inside is called **newsdata.sql**. Put this file into the **vagrant** directory, which is shared with your virtual machine.
 
 To load the data, **cd** into the **vagrant** directory and use the following command: 
 
