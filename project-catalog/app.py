@@ -1,65 +1,85 @@
-from flask import Flask, render_template
-from sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, request, redirect, url_for
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from database_setup import Base, Event, Attendance
+
 app = Flask(__name__)
 
-ENV = 'dev'
+#Connect to Database and create database session
+engine = create_engine('postgresql://postgres:1234@localhost/events')
+Base.metadata.bind = engine
 
-if ENV == 'dev':
-    app.debug = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost/events'
-else:
-    app.debug = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = ''
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
-
+#Show all events
 @app.route("/")
 @app.route("/event")
 def showEvent():
-    return render_template('events.html')
+    event = session.query(Event)
+    return render_template('events.html', event = event)
 
 
-@app.route("/event/new")
+#Create a new event
+@app.route("/event/new", methods=['GET', 'POST'])
 def newEvent():
-    return render_template('newEvent.html')
+    if request.method == 'POST':
+        newEvent = Event(name = request.form['name'])
+        session.add(newEvent)
+        session.commit()
+        return redirect(url_for('showEvent'))
+    else:
+        return render_template('newEvent.html')
 
 
-@app.route("/event/<int:event_id>/edit")
+#Edit an event
+@app.route("/event/<int:event_id>/edit", methods = ['GET','POST'])
 def editEvent(event_id):
-    return render_template('editEvent.html')
+    editedEvent = session.query(Event).filter_by(id = event_id).one()
+    if request.method == 'POST':
+        if request.form['name']:
+            editedEvent.name = request.form['name']
+            return redirect(url_for('showEvent'))
+    else:
+        return render_template('editEvent.html', event = editedEvent)
 
 
-@app.route("/event/<int:event_id>/delete")
+#Delete an event
+@app.route("/event/<int:event_id>/delete", methods = ['GET','POST'])
 def deleteEvent(event_id):
-    return render_template('deleteEvent.html')
+    eventToDelete = session.query(Event).filter_by(id = event_id).one()
+    if request.method == 'POST':
+        session.delete(eventToDelete)
+        session.commit()
+        return redirect(url_for('showEvent', event_id = event_id))
+    else:
+        return render_template('deleteEvent.html',event = eventToDelete)
 
-
+#Show the information of an event
 @app.route("/event/<int:event_id>/")
-@app.route("/event/<int:event_id>/attendance")
+@app.route("/event/<int:event_id>/info")
 def showAttendance(event_id):
-    return render_template('attendance.html')
+    
 
 
-@app.route("/event/<int:event_id>/attendance/new")
+#Create a new attendance for the event
+@app.route("/event/<int:event_id>/info/new", methods=['GET','POST'])
 def newAttendance(event_id):
-    return render_template('newAttendance.html  ')
+    
 
 
-@app.route("/event/<int:event_id>/attendance/<int:user_id>/edit")
-def editAttendance(event_id):
-    return "This page edit an existing attendance of an event"
-
-
-@app.route("/event/<int:event_id>/attendance/<int:user_id>/delete")
-def deleteAttendance(event_id):
-    return "This page delete an existing attendance of an event"
+@app.route("/event/<int:event_id>/info/<int:info_id>/edit", methods=['GET','POST'])
+def editAttendance(event_id, attendance_id):
+    
+ 
+@app.route("/event/<int:event_id>/info/<int:info_id>/delete", methods = ['GET','POST'])
+def deleteAttendance(event_id, attendance_id):
+    
 
 
 if __name__ == "__main__":
+    app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host = '127.0.0.1', port = 5050)

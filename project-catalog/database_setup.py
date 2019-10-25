@@ -22,7 +22,6 @@ class Attendance(Base):
     first_name = Column(String(80), nullable=False)
     last_name = Column(String(80), nullable=False)
     id = Column(Integer, primary_key=True)
-    pax = Column(String(8))
     event_id = Column(Integer, ForeignKey('event.id'))
     event = relationship(Event)
 
