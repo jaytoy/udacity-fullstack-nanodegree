@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from database_setup import Base, Event, Attendance
+from database_setup import Base, Event
 
 app = Flask(__name__)
 
@@ -18,15 +18,15 @@ session = DBSession()
 @app.route("/")
 @app.route("/event")
 def showEvent():
-    event = session.query(Event)
-    return render_template('events.html', event = event)
+    return render_template('events.html')
 
 
 #Create a new event
 @app.route("/event/new", methods=['GET', 'POST'])
 def newEvent():
     if request.method == 'POST':
-        newEvent = Event(name = request.form['name'])
+        newEvent = Event(name = request.form['name'], date = request.form['date'], time = request.form['time'],
+            price = request.form['price'], venue = request.form['venue'], description = request.form['description'])
         session.add(newEvent)
         session.commit()
         return redirect(url_for('showEvent'))
@@ -61,21 +61,23 @@ def deleteEvent(event_id):
 @app.route("/event/<int:event_id>/")
 @app.route("/event/<int:event_id>/info")
 def showAttendance(event_id):
-    
+    render_template('eventInfo.html')
 
 
 #Create a new attendance for the event
 @app.route("/event/<int:event_id>/info/new", methods=['GET','POST'])
 def newAttendance(event_id):
-    
+    render_template('newEventInfo.html')
 
 
 @app.route("/event/<int:event_id>/info/<int:info_id>/edit", methods=['GET','POST'])
-def editAttendance(event_id, attendance_id):
+def editAttendance(event_id, info_id):
+    render_template('editEventInfo.html')
     
  
 @app.route("/event/<int:event_id>/info/<int:info_id>/delete", methods = ['GET','POST'])
 def deleteAttendance(event_id, attendance_id):
+    render_template('deleteEventInfo.html')
     
 
 

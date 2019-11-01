@@ -1,0 +1,23 @@
+{% extends "main.html" %}
+{% block content %}
+<h1> Edit {{event.name}} Information</h1>
+
+
+<form action="#" method = 'POST'>
+
+	<p>Date:</p>
+		<input type ='text' size='30' name='date'>
+	<p>Time:</p>
+		<input type ='text' size='30' name='time'>
+	<p>Price:</p>
+		<input type ='text' size='30' name='time'>
+	<p>Venue:</p>
+		<input type ='text' size='30' name='venue'>
+	<p>Description:</p>
+		<input type ='text' size='100' name='description'>
+
+<input type='submit' value='Edit'>
+
+
+<a href = '{{url_for('showEvent')}}'> Cancel </a>
+{% endblock %}

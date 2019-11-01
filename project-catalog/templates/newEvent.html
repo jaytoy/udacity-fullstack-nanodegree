@@ -1,10 +1,6 @@
-<html>
+{% extends 'main.html' %}
 
-<head>
-<link rel=stylesheet type=text/css href="">
-	</head>
-<body>
-
+{% block content %}
 <h1>New Event</h1>
 
 <form action="/event/new" method = 'POST'>
@@ -12,11 +8,18 @@
 
 	<p>Name:</p>
 		<input type ='text' size='30' name='name'>
+	<p>Date:</p>
+		<input type ='date' size='30' name='date'>
+	<p>Time:</p>
+		<input type ='time' size='30' name='time'>
+	<p>Price:</p>
+		<input type ='number' size='30' name='price'>
+	<p>Venue:</p>
+		<input type ='text' size='30' name='venue'>
+	<p>Description:</p>
+		<input type ='text' size='100' name='description'>
 
 
 <input type='submit' value='Create'>
 
-</form>
-
-</body>
-</html>
+{% endblock %}
