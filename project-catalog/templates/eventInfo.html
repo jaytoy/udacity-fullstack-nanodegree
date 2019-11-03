@@ -1,33 +1,31 @@
 {% extends "main.html" %}
 {% block content %}
-<h1>Chinese New Year</h1>
+
+<h1>{{event.name}}</h1>
+
 <br>
 <br>
 <table>
     <tr>
-        <th>Date</th>
-        <td></td>
-        <td><a href="#">Edit</a></td>
-        <td><a href="#">Delete</a></td>
+        <th>Date:</th>
+        <td>{{event.date}}</td>
     </tr>
     <tr>
-        <th>Time</th>
-        <td></td>
-        <td><a href="#">Edit</a></td>
-        <td><a href="#">Delete</a></td>
+        <th>Time:</th>
+        <td>{{event.time}}</td>
     </tr>
     <tr>
-        <th>Price</th>
-        <td></td>
-        <td><a href="#">Edit</a></td>
-        <td><a href="#">Delete</a></td>
+        <th>Price:</th>
+        <td>{{event.price}}</td>
     </tr> 
     <tr>
-        <th>Venue</th>
-        <td></td>
-        <td><a href="#">Edit</a></td>
-        <td><a href="#">Delete</a></td>
+        <th>Venue:</th>
+        <td>{{event.venue}}</td>
+    </tr>
+    <tr>
+        <th>Description:</th>
+        <td>{{event.description}}</td>
     </tr>
 </table>
-
+<a href = '{{url_for('editEventInfo' , event_id = event.id)}}'>Edit</a>
 {% endblock %}

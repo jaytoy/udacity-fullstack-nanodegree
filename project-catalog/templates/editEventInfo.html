@@ -3,21 +3,23 @@
 <h1> Edit {{event.name}} Information</h1>
 
 
-<form action="#" method = 'POST'>
+<form action="{{ url_for('editEventInfo',event_id = event.id)}}" method = 'POST'>
 
+	<p>Name:</p>
+		<input type ='text' size='30' name='name' placeholder = '{{event.name }}'>
 	<p>Date:</p>
-		<input type ='text' size='30' name='date'>
+		<input type ='date' size='30' name='date' placeholder="{{event.date}}">
 	<p>Time:</p>
-		<input type ='text' size='30' name='time'>
+		<input type ='time' size='30' name='time'placeholder="{{event.time}}">
 	<p>Price:</p>
-		<input type ='text' size='30' name='time'>
+		<input type ='number' size='30' name='price'placeholder="{{event.price}}">
 	<p>Venue:</p>
-		<input type ='text' size='30' name='venue'>
+		<input type ='text' size='30' name='venue'placeholder="{{event.venue}}">
 	<p>Description:</p>
-		<input type ='text' size='100' name='description'>
+		<input type ='text' size='100' name='description'placeholder="{{event.description}}">
 
 <input type='submit' value='Edit'>
 
 
-<a href = '{{url_for('showEvent')}}'> Cancel </a>
-{% endblock %}
+<a href = '{{url_for('showEvent' , event_id = event.id)}}'> Cancel </a>
+{% endblock %}    

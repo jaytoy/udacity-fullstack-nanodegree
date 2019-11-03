@@ -1,8 +1,28 @@
+import json
+import os
+
 from flask import Flask, render_template, request, redirect, url_for
-from sqlalchemy import create_engine
+from flask_login import (
+    LoginManager,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
+from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
+from oauthlib.oauth2 import WebApplicationClient import requests
+
 
 from database_setup import Base, Event
+
+
+# # Configuration
+# GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
+# GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
+# GOOGLE_DISCOVERY_URL = (
+#     "https://accounts.google.com/.well-known/openid-configuration"
+# )
 
 app = Flask(__name__)
 
@@ -18,7 +38,8 @@ session = DBSession()
 @app.route("/")
 @app.route("/event")
 def showEvent():
-    return render_template('events.html')
+    events = session.query(Event).order_by(desc(Event.date))
+    return render_template('events.html', events = events)
 
 
 #Create a new event
@@ -60,26 +81,31 @@ def deleteEvent(event_id):
 #Show the information of an event
 @app.route("/event/<int:event_id>/")
 @app.route("/event/<int:event_id>/info")
-def showAttendance(event_id):
-    render_template('eventInfo.html')
+def showEventInfo(event_id):
+    event = session.query(Event).filter_by(id = event_id).one()
+    return render_template('eventInfo.html', event = event)
 
-
-#Create a new attendance for the event
-@app.route("/event/<int:event_id>/info/new", methods=['GET','POST'])
-def newAttendance(event_id):
-    render_template('newEventInfo.html')
-
-
-@app.route("/event/<int:event_id>/info/<int:info_id>/edit", methods=['GET','POST'])
-def editAttendance(event_id, info_id):
-    render_template('editEventInfo.html')
+#Edit the information of an event
+@app.route("/event/<int:event_id>/info/edit", methods=['GET','POST'])
+def editEventInfo(event_id):
+    editedEventInfo = session.query(Event).filter_by(id = event_id).one()
+    if request.method == 'POST':
+        if request.form['name']:
+            editedEventInfo.name = request.form['name']
+        if request.form['date']:
+            editedEventInfo.date = request.form['date']
+        if request.form['time']:
+            editedEventInfo.time = request.form['time']
+        if request.form['price']:
+            editedEventInfo.price = request.form['price']
+        if request.form['venue']:
+            editedEventInfo.venue = request.form['venue']
+        if request.form['description']:
+            editedEventInfo.description = request.form['description']
+        return redirect(url_for('showEventInfo', event_id = event_id))
+    else:
+        return render_template('editEventInfo.html', event = editedEventInfo)
     
- 
-@app.route("/event/<int:event_id>/info/<int:info_id>/delete", methods = ['GET','POST'])
-def deleteAttendance(event_id, attendance_id):
-    render_template('deleteEventInfo.html')
-    
-
 
 if __name__ == "__main__":
     app.secret_key = 'super_secret_key'

@@ -21,16 +21,13 @@ class Event(Base):
     description = Column(String(250), nullable=False)
 
 
+class User(Base):
+    __tablename__ = 'user'
 
-# class Attendance(Base):
-#     __tablename__ = 'attendance'
-
-#     first_name = Column(String(80), nullable=False)
-#     last_name = Column(String(80), nullable=False)
-#     id = Column(Integer, primary_key=True)
-#     event_id = Column(Integer, ForeignKey('event.id'))
-#     event = relationship(Event)
-
+    id = Column(Integer, primary_key=True)
+    name = Column(String(80), nullable=False)
+    email = Column(String(80), nullable=False)
+    
 
 engine = create_engine(
     "postgresql://postgres:1234@localhost/events",
