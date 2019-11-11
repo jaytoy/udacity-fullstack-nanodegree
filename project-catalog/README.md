@@ -1,6 +1,6 @@
 # Udacity Project - Item Catalog
 
-This is the second project of the [Full Stack Web Developer Nanodegree](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004). In this project we'll build a website with *Flask*, **SQLALchemy*, *Google OAuth* and *API endpoint*.
+This is the second project of the [Full Stack Web Developer Nanodegree](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004). In this project we'll build an event website with *Flask*, *SQLALchemy*, *Google OAuth* and *API endpoint*.
 
 ## Getting Started 
 
