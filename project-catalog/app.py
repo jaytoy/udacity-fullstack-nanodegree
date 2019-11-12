@@ -24,7 +24,8 @@ GOOGLE_DISCOVERY_URL = (
 app = Flask(__name__)
 
 # Database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost/events'
+DATABASE_URI = 'postgresql://postgres:1234@localhost/events'
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Init db
