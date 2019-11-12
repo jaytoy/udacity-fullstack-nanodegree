@@ -13,9 +13,6 @@ from flask_login import (
 from oauthlib.oauth2 import WebApplicationClient
 import requests
 
-from models import *
-
-
 # Configuration
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
@@ -38,6 +35,8 @@ db = SQLAlchemy(app)
 # https://flask-login.readthedocs.io/en/latest
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+from models import *
 
 
 @login_manager.unauthorized_handler
@@ -119,7 +118,7 @@ def callback():
     # Create a user in our db with the information provided
     # by Google
     user = User(
-        id_=unique_id, name=users_name, email=users_email
+        id_=unique_id, name=users_name, email=users_email, events=[]
     )
 
     # Doesn't exist? Add to database
@@ -164,7 +163,8 @@ def newEvent():
             time=request.form['time'],
             price=request.form['price'],
             venue=request.form['venue'],
-            description=request.form['description']
+            description=request.form['description'],
+            user_id=current_user.id
         )
         db.session.add(newEvent)
         db.session.commit()
@@ -178,12 +178,16 @@ def newEvent():
 @login_required
 def editEvent(event_id):
     editedEvent = session.query(Event).filter_by(id=event_id).one()
-    if request.method == 'POST':
-        if request.form['name']:
-            editedEvent.name = request.form['name']
-            return redirect(url_for('showEvent'))
+    if current_user.id != editedEven.user_id:
+        return "You are not authorized to edit this event."
     else:
-        return render_template('editEvent.html', event=editedEvent)
+        editedEvent = session.query(Event).filter_by(id=event_id).one()
+        if request.method == 'POST':
+            if request.form['name']:
+                editedEvent.name = request.form['name']
+                return redirect(url_for('showEvent'))
+        else:
+            return render_template('editEvent.html', event=editedEvent)
 
 
 # Delete an event
@@ -191,12 +195,15 @@ def editEvent(event_id):
 @login_required
 def deleteEvent(event_id):
     eventToDelete = db.session.query(Event).filter_by(id=event_id).one()
-    if request.method == 'POST':
-        db.session.delete(eventToDelete)
-        db.session.commit()
-        return redirect(url_for('showEvent', event_id=event_id))
+    if current_user.id != eventToDelete.user_id:
+        return "You are not authorized to delete this event."
     else:
-        return render_template('deleteEvent.html', event=eventToDelete)
+        if request.method == 'POST':
+            db.session.delete(eventToDelete)
+            db.session.commit()
+            return redirect(url_for('showEvent', event_id=event_id))
+        else:
+            return render_template('deleteEvent.html', event=eventToDelete)
 
 # Show the information of an event
 @app.route("/event/<int:event_id>/")
@@ -210,22 +217,25 @@ def showEventInfo(event_id):
 @login_required
 def editEventInfo(event_id):
     editedEventInfo = db.session.query(Event).filter_by(id=event_id).one()
-    if request.method == 'POST':
-        if request.form['name']:
-            editedEventInfo.name = request.form['name']
-        if request.form['date']:
-            editedEventInfo.date = request.form['date']
-        if request.form['time']:
-            editedEventInfo.time = request.form['time']
-        if request.form['price']:
-            editedEventInfo.price = request.form['price']
-        if request.form['venue']:
-            editedEventInfo.venue = request.form['venue']
-        if request.form['description']:
-            editedEventInfo.description = request.form['description']
-        return redirect(url_for('showEventInfo', event_id=event_id))
+    if current_user.id != editedEventInfo.user_id:
+        return "You are not authorized to edit this event."
     else:
-        return render_template('editEventInfo.html', event=editedEventInfo)
+        if request.method == 'POST':
+            if request.form['name']:
+                editedEventInfo.name = request.form['name']
+            if request.form['date']:
+                editedEventInfo.date = request.form['date']
+            if request.form['time']:
+                editedEventInfo.time = request.form['time']
+            if request.form['price']:
+                editedEventInfo.price = request.form['price']
+            if request.form['venue']:
+                editedEventInfo.venue = request.form['venue']
+            if request.form['description']:
+                editedEventInfo.description = request.form['description']
+            return redirect(url_for('showEventInfo', event_id=event_id))
+        else:
+            return render_template('editEventInfo.html', event=editedEventInfo)
 
 
 @app.route('/event/JSON')
