@@ -12,7 +12,7 @@ Here are the third-party dependencies you'll need to install to get it running:
 * Flask-Login: A tool for managing user session  
 * OAuthLib: A battle-hardened OIDC library
 * pyOpenSSL: An easy way to enable running securely with *https*
-* pycopg2: A database to store some information 
+* psycopg2: A database to store some information 
 
 We'll create a *requirements.txt* file with the following contents:
 
@@ -21,7 +21,7 @@ Flask==1.1.1
 Flask-Login==0.4.1
 oauthlib==3.1.0
 pyOpenSSL==19.0.0
-pycopg2==2.8.4
+psycopg2==2.8.4
 ```
 
 To install all those dependenciesn from the **requirements.txt**, run the following command: 
